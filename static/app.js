@@ -41,7 +41,7 @@
     }
     grid.innerHTML = data.temperatures.map(s => {
       const hot = s.value > 80 ? ' hot' : '';
-      return metricHTML('temp' + hot, `${s.label} (${s.name})`, s.value, s.unit);
+      return metricHTML('temp' + hot, s.label, s.value, s.unit);
     }).join('');
   }
 
@@ -52,7 +52,7 @@
       return;
     }
     grid.innerHTML = data.fans.map(s =>
-      metricHTML('fan', `${s.name} #${s.channel}`, s.value, s.unit)
+      metricHTML('fan', s.label, s.value, s.unit)
     ).join('');
   }
 
@@ -63,7 +63,7 @@
       return;
     }
     grid.innerHTML = data.voltages.map(s =>
-      metricHTML('volt', `${s.name} #${s.channel}`, s.value, s.unit)
+      metricHTML('volt', s.label, s.value, s.unit)
     ).join('');
   }
 

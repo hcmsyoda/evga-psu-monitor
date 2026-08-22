@@ -21,6 +21,53 @@ from flask import Flask, render_template, jsonify
 
 app = Flask(__name__)
 
+# Friendly names for common hwmon sensor labels
+FRIENDLY_NAMES = {
+    # NCT6793 / Nuvoton Super I/O
+    "SYSTIN": "System Board",
+    "CPUTIN": "CPU Socket",
+    "AUXTIN0": "Aux Temp 0",
+    "AUXTIN1": "Aux Temp 1",
+    "AUXTIN2": "Aux Temp 2",
+    "AUXTIN3": "Aux Temp 3",
+    "TSI0_TEMP": "CPU (TSI)",
+    "TSI1_TEMP": "CPU (TSI)",
+    "TSI2_TEMP": "PCH / VRM",
+    "TSI3_TEMP": "VRM 2",
+    "TSI4_TEMP": "VRM 3",
+    "TSI5_TEMP": "VRM 4",
+    "TSI6_TEMP": "VRM 5",
+    # ACPI
+    "acpitz": "ACPI Thermal",
+    # Coretemp
+    "Core 0": "CPU Core 0",
+    "Core 1": "CPU Core 1",
+    "Core 2": "CPU Core 2",
+    "Core 3": "CPU Core 3",
+    "Core 4": "CPU Core 4",
+    "Core 5": "CPU Core 5",
+    "Core 6": "CPU Core 6",
+    "Core 7": "CPU Core 7",
+    # Fans
+    "fan1": "Fan 1",
+    "fan2": "Fan 2",
+    "fan3": "Fan 3",
+    "fan4": "Fan 4",
+    "fan5": "Fan 5",
+    "fan6": "Fan 6",
+}
+
+def friendly_name(raw_label, chip_name, sensor_type, channel):
+    """Return a human-readable sensor name."""
+    # Direct lookup
+    if raw_label in FRIENDLY_NAMES:
+        return FRIENDLY_NAMES[raw_label]
+    # Fallback: clean up the raw label
+    clean = raw_label.replace("_", " ").title()
+    if clean.startswith("Temp") or clean.startswith("Fan") or clean.startswith("In"):
+        return f"{chip_name} {clean}"
+    return clean
+
 # ---------------------------------------------------------------------------
 # Sensor reading helpers
 # ---------------------------------------------------------------------------
@@ -70,9 +117,11 @@ def read_hwmon_sensors():
                     if celsius > 150 or celsius < -40:
                         continue
                     label = read_file(device_path / f"temp{ch}_label") or f"Sensor {ch}"
+                    friendly = friendly_name(label, name, "temp", ch)
                     sensors.append({
                         "type": "temperature", "name": name,
-                        "channel": ch, "label": label,
+                        "channel": ch, "label": friendly,
+                        "raw_label": label,
                         "value": round(celsius, 1), "unit": "°C"
                     })
                 except ValueError:
@@ -84,9 +133,15 @@ def read_hwmon_sensors():
             val_rpm = read_file(f)
             if val_rpm:
                 try:
+                    rpm = int(val_rpm)
+                    if rpm <= 0:
+                        continue
+                    label = read_file(device_path / f"fan{ch}_label") or f"fan{ch}"
+                    friendly = friendly_name(label, name, "fan", ch)
                     sensors.append({
                         "type": "fan", "name": name,
-                        "channel": ch, "value": int(val_rpm), "unit": "RPM"
+                        "channel": ch, "label": friendly,
+                        "value": rpm, "unit": "RPM"
                     })
                 except ValueError:
                     pass
@@ -97,10 +152,17 @@ def read_hwmon_sensors():
             val_mv = read_file(f)
             if val_mv:
                 try:
-                    volts = int(val_mv) / 1000
+                    mv = int(val_mv)
+                    volts = mv / 1000
+                    # Skip obviously invalid voltages
+                    if volts < 0 or volts > 20:
+                        continue
+                    label = read_file(device_path / f"in{ch}_label") or f"in{ch}"
+                    friendly = friendly_name(label, name, "volt", ch)
                     sensors.append({
                         "type": "voltage", "name": name,
-                        "channel": ch, "value": round(volts, 3), "unit": "V"
+                        "channel": ch, "label": friendly,
+                        "value": round(volts, 3), "unit": "V"
                     })
                 except ValueError:
                     pass
