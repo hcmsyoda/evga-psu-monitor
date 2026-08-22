@@ -55,6 +55,23 @@ FRIENDLY_NAMES = {
     "fan4": "Fan 4",
     "fan5": "Fan 5",
     "fan6": "Fan 6",
+    # Voltages (NCT6793 standard mappings)
+    "Vcore": "CPU Vcore",
+    "AVCC": "AVCC (+3.3V)",
+    "3VCC": "+3.3V",
+    "+3.3V": "+3.3V",
+    "+5V": "+5V",
+    "+12V": "+12V",
+    "VIN5": "VIN5",
+    "VIN6": "VIN6",
+    "3VSB": "3.3V Standby",
+    "Vbat": "CMOS Battery",
+    "VTT": "DRAM Termination",
+    "VIN10": "VIN10",
+    "VIN11": "VIN11",
+    "VIN12": "VIN12",
+    "VIN13": "VIN13",
+    "VIN14": "VIN14",
 }
 
 def friendly_name(raw_label, chip_name, sensor_type, channel):
