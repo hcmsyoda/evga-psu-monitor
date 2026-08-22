@@ -66,6 +66,9 @@ def read_hwmon_sensors():
             if val_mc:
                 try:
                     celsius = int(val_mc) / 1000
+                    # Skip obviously invalid readings (disconnected sensors)
+                    if celsius > 150 or celsius < -40:
+                        continue
                     label = read_file(device_path / f"temp{ch}_label") or f"Sensor {ch}"
                     sensors.append({
                         "type": "temperature", "name": name,
