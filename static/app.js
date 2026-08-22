@@ -15,22 +15,47 @@
 
   function renderPower(data) {
     const grid = $('powerGrid');
-    const sensors = data.power.sensors;
-    if (!sensors.length) {
-      grid.innerHTML = '<p class="no-data">No power sensors detected. Motherboard may not expose INA219/INA3221 via hwmon.</p>';
-      return;
-    }
-    grid.innerHTML = sensors.map(s =>
-      metricHTML('power', `${s.name} #${s.channel}`, s.value, s.unit)
-    ).join('');
+    const pg = data.power.powerguess;
+    let html = '';
 
-    const gpuW = data.power.gpu_total_w;
-    const gpuEl = $('gpuPower');
-    if (gpuW > 0) {
-      gpuEl.textContent = `GPU total: ${gpuW} W`;
-    } else {
-      gpuEl.textContent = '';
+    // PowerGuess estimate — main power display
+    if (pg) {
+      const tag = pg.measured ? 'measured' : `±${pg.error_margin_w}W`;
+      html += metricHTML('power', 'System Power', pg.power_w, 'W');
+      html += `<div class="metric power">
+        <div class="label">Source</div>
+        <div class="value" style="font-size:0.9rem">${pg.source}<span class="unit"> ${tag}</span></div>
+      </div>`;
+      if (pg.voltage_v > 0) {
+        html += metricHTML('volt', 'AC Voltage', pg.voltage_v, 'V');
+      }
+      if (pg.current_a > 0) {
+        html += metricHTML('current', 'AC Current', pg.current_a, 'A');
+      }
     }
+
+    // Any hwmon power sensors
+    const sensors = data.power.sensors;
+    if (sensors.length) {
+      html += sensors.map(s =>
+        metricHTML('power', `${s.name} #${s.channel}`, s.value, s.unit)
+      ).join('');
+    }
+
+    // GPU power
+    const gpuW = data.power.gpu_total_w;
+    if (gpuW > 0) {
+      html += metricHTML('power', 'GPU Power', gpuW, 'W');
+    }
+
+    if (!html) {
+      grid.innerHTML = '<p class="no-data">No power sensors detected. Motherboard may not expose INA219/INA3221 via hwmon.</p>';
+    } else {
+      grid.innerHTML = html;
+    }
+
+    const gpuEl = $('gpuPower');
+    gpuEl.textContent = '';
   }
 
   function renderTemps(data) {

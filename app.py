@@ -21,6 +21,41 @@ from flask import Flask, render_template, jsonify
 
 app = Flask(__name__)
 
+# PowerGuess integration — estimated system power from CPU load
+_power_monitor = None
+
+def get_power_monitor():
+    """Lazy-init the PowerStatMonitor with PSU-bounded calibration."""
+    global _power_monitor
+    if _power_monitor is None:
+        try:
+            from powerguess import PowerStatMonitor, Calibration
+            # EVGA SuperNOVA 850W — idle ~60W, peak ~850W
+            cal = Calibration.from_psu(psu_watts=850, idle_power=60)
+            _power_monitor = PowerStatMonitor(calibration=cal)
+        except Exception:
+            _power_monitor = False  # sentinel: don't retry
+    return _power_monitor if _power_monitor is not False else None
+
+
+def read_powerguess():
+    """Get estimated system power via powerguess."""
+    monitor = get_power_monitor()
+    if monitor is None:
+        return None
+    try:
+        reading = monitor.measure()
+        return {
+            "power_w": round(reading.power, 1),
+            "voltage_v": round(reading.voltage, 1),
+            "current_a": round(reading.current, 3),
+            "source": reading.source,
+            "measured": reading.measured,
+            "error_margin_w": round(reading.error_margin, 1),
+        }
+    except Exception:
+        return None
+
 # Friendly names for common hwmon sensor labels
 FRIENDLY_NAMES = {
     # NCT6793 / Nuvoton Super I/O
@@ -327,6 +362,7 @@ def get_system_summary():
             "sensors": power_sensors,
             "total_hwmon_w": round(total_power, 2),
             "gpu_total_w": round(gpu_power, 2),
+            "powerguess": read_powerguess(),
         },
         "temperatures": temp_sensors,
         "fans": fan_sensors,
