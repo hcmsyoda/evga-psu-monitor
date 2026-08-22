@@ -39,7 +39,10 @@ FRIENDLY_NAMES = {
     "TSI6_TEMP": "VRM 5",
     # ACPI
     "acpitz": "ACPI Thermal",
+    "Sensor 1": "ACPI Sensor 1",
+    "Sensor 2": "ACPI Sensor 2",
     # Coretemp
+    "Package Id 0": "CPU Package",
     "Core 0": "CPU Core 0",
     "Core 1": "CPU Core 1",
     "Core 2": "CPU Core 2",
@@ -48,6 +51,13 @@ FRIENDLY_NAMES = {
     "Core 5": "CPU Core 5",
     "Core 6": "CPU Core 6",
     "Core 7": "CPU Core 7",
+    # PCH (Platform Controller Hub)
+    "Pch Chip Temp": "PCH Chip",
+    "Pch Cpu Temp": "PCH CPU Link",
+    "Pch Mch Temp": "PCH Memory Hub",
+    # PECI (Platform Environment Control Interface)
+    "Peci Agent 0": "CPU PECI",
+    "Peci Agent 0 Calibration": "CPU Calibration",
     # Fans
     "fan1": "Fan 1",
     "fan2": "Fan 2",
