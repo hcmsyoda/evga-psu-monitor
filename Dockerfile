@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     lm-sensors \
     ipmitool \
     dmidecode \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -19,7 +20,5 @@ COPY templates/ templates/
 COPY static/ static/
 
 EXPOSE 8088
-
-HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD curl -f http://localhost:8088/api/health || exit 1
 
 CMD ["python", "app.py"]
