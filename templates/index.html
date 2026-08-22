@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EVGA SuperNOVA 850 — PSU Monitor</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>⚡ EVGA SuperNOVA 850 Monitor</h1>
+    <p class="subtitle">System Power · Temperature · Fan Speed</p>
+    <p class="last-update" id="lastUpdate">Connecting…</p>
+  </header>
+
+  <!-- Power Section -->
+  <section class="card" id="powerCard">
+    <h2>🔌 Power Draw</h2>
+    <div class="metric-grid" id="powerGrid"></div>
+    <div class="gpu-power" id="gpuPower"></div>
+  </section>
+
+  <!-- Temperatures -->
+  <section class="card" id="tempCard">
+    <h2>🌡️ Temperatures</h2>
+    <div class="metric-grid" id="tempGrid"></div>
+  </section>
+
+  <!-- Fans -->
+  <section class="card" id="fanCard">
+    <h2>💨 Fan Speeds</h2>
+    <div class="metric-grid" id="fanGrid"></div>
+  </section>
+
+  <!-- Voltages -->
+  <section class="card" id="voltCard">
+    <h2>⚡ Voltages</h2>
+    <div class="metric-grid" id="voltGrid"></div>
+  </section>
+
+  <!-- GPU Details -->
+  <section class="card" id="gpuCard" style="display:none">
+    <h2>🎮 GPU</h2>
+    <div id="gpuDetails"></div>
+  </section>
+
+  <footer>
+    <p>Reads from <code>/sys/class/hwmon</code>, Intel RAPL, and <code>nvidia-smi</code>.
+       EVGA SuperNOVA 850 has no USB monitoring — power is measured by motherboard INA sensors.</p>
+  </footer>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

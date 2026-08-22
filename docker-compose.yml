@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  psu-monitor:
+    build: .
+    image: evga-psu-monitor:latest
+    container_name: evga-psu-monitor
+    restart: unless-stopped
+    ports:
+      - "8088:8088"
+    volumes:
+      # Required: pass host hwmon + powercap into the container
+      - /sys/class/hwmon:/sys/class/hwmon:ro
+      - /sys/class/powercap:/sys/class/powercap:ro
+      - /sys/class/thermal:/sys/class/thermal:ro
+    # If you have hidraw devices for direct PSU USB access:
+    # devices:
+    #   - /dev/hidraw0:/dev/hidraw0
+    environment:
+      - PORT=8088
+      - POLL_SECONDS=3

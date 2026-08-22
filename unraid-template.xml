@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>evga-psu-monitor</Name>
+  <Repository>evga-psu-monitor:latest</Repository>
+  <Registry/>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support/>
+  <Project/>
+  <Overview>Monitor system power draw, temperatures, and fan speeds. Reads motherboard hwmon sensors (INA219/INA3221), Intel RAPL, and NVIDIA GPU data. Note: EVGA SuperNOVA 850 has no USB monitoring interface — power is measured via motherboard sensors.</Overview>
+  <Category>System: Monitoring</Category>
+  <WebUI>http://[IP]:[PORT:8088]/</WebUI>
+  <TemplateURL/>
+  <Icon>/mnt/user/appdata/evga-psu-monitor/icon.png</Icon>
+  <ExtraParams>--device /dev/hidraw0:/dev/hidraw0 --privileged</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText/>
+  <DonateLink/>
+  <Requires/>
+  <Config Name="Web Port" Target="8088" Default="8088" Mode="tcp" Description="Web UI port" Type="Port" Display="always" Required="true" Mask="false">8088</Config>
+  <Config Name="Refresh Rate" Target="POLL_SECONDS" Default="3" Mode="env" Description="Sensor polling interval in seconds" Type="Variable" Display="always" Required="false" Mask="false">3</Config>
+</Container>
