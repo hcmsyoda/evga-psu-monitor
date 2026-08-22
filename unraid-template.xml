@@ -7,14 +7,14 @@
   <MyIP/>
   <Shell>bash</Shell>
   <Privileged>false</Privileged>
-  <Support/>
-  <Project/>
-  <Overview>Monitor system power draw, temperatures, and fan speeds. Reads motherboard hwmon sensors (INA219/INA3221), Intel RAPL, and NVIDIA GPU data. Note: EVGA SuperNOVA 850 has no USB monitoring interface — power is measured via motherboard sensors.</Overview>
+  <Support>https://github.com/hcmsyoda/evga-psu-monitor/issues</Support>
+  <Project>https://github.com/hcmsyoda/evga-psu-monitor</Project>
+  <Overview>Monitor system power draw, temperatures, and fan speeds via motherboard hwmon sensors, Intel RAPL, and NVIDIA GPU. Dashboard on port 8088 with auto-refresh.</Overview>
   <Category>System: Monitoring</Category>
   <WebUI>http://[IP]:[PORT:8088]/</WebUI>
   <TemplateURL/>
   <Icon>/mnt/user/appdata/evga-psu-monitor/icon.png</Icon>
-  <ExtraParams>--device /dev/hidraw0:/dev/hidraw0 --privileged</ExtraParams>
+  <ExtraParams/>
   <PostArgs/>
   <CPUset/>
   <DateInstalled/>
@@ -22,5 +22,9 @@
   <DonateLink/>
   <Requires/>
   <Config Name="Web Port" Target="8088" Default="8088" Mode="tcp" Description="Web UI port" Type="Port" Display="always" Required="true" Mask="false">8088</Config>
+  <Config Name="Appdata" Target="/app/config" Default="/mnt/user/appdata/evga-psu-monitor" Mode="rw" Description="Appdata storage path" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/evga-psu-monitor</Config>
+  <Config Name="hwmon" Target="/sys/class/hwmon" Default="/sys/class/hwmon" Mode="ro" Description="Hardware monitoring sensors (read-only)" Type="Path" Display="always" Required="true" Mask="false">/sys/class/hwmon</Config>
+  <Config Name="powercap" Target="/sys/class/powercap" Default="/sys/class/powercap" Mode="ro" Description="Intel RAPL power sensors (read-only)" Type="Path" Display="always" Required="true" Mask="false">/sys/class/powercap</Config>
+  <Config Name="thermal" Target="/sys/class/thermal" Default="/sys/class/thermal" Mode="ro" Description="Thermal zone sensors (read-only)" Type="Path" Display="always" Required="true" Mask="false">/sys/class/thermal</Config>
   <Config Name="Refresh Rate" Target="POLL_SECONDS" Default="3" Mode="env" Description="Sensor polling interval in seconds" Type="Variable" Display="always" Required="false" Mask="false">3</Config>
 </Container>
