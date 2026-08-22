@@ -205,7 +205,7 @@ def read_hwmon_sensors():
 
         # Voltage sensors (millivolts -> volts)
         for f in sorted(device_path.glob("in*_input")):
-            ch = f.stem.replace("in", "").replace("_input", "")
+            ch = f.stem[2:].replace("_input", "")  # "in0_input" -> "0"
             val_mv = read_file(f)
             if val_mv:
                 try:
@@ -226,7 +226,7 @@ def read_hwmon_sensors():
 
         # Current sensors (milliamps -> amps)
         for f in sorted(device_path.glob("curr*_input")):
-            ch = f.stem.replace("curr", "").replace("_input", "")
+            ch = f.stem[4:].replace("_input", "")  # "curr0_input" -> "0"
             val_ma = read_file(f)
             if val_ma:
                 try:
