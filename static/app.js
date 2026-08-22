@@ -92,6 +92,28 @@
     ).join('');
   }
 
+  function renderEcoflow(data) {
+    const card = $('ecoflowCard');
+    const grid = $('ecoflowGrid');
+    const ef = data.ecoflow;
+    if (!ef) {
+      card.style.display = 'none';
+      return;
+    }
+    card.style.display = '';
+    let html = '';
+    if (ef.charge_pct != null) html += metricHTML('power', 'Battery', ef.charge_pct, '%');
+    if (ef.total_load_w != null) html += metricHTML('power', 'Total Load', ef.total_load_w, 'W');
+    if (ef.total_draw_w != null) html += metricHTML('power', 'Total Draw', ef.total_draw_w, 'W');
+    if (ef.ac_load_w != null) html += metricHTML('fan', 'AC Load', ef.ac_load_w, 'W');
+    if (ef.dc_load_w != null) html += metricHTML('fan', 'DC Load', ef.dc_load_w, 'W');
+    if (ef.usb_a_w != null) html += metricHTML('fan', 'USB-A', ef.usb_a_w, 'W');
+    if (ef.usb_c_w != null) html += metricHTML('fan', 'USB-C', ef.usb_c_w, 'W');
+    if (ef.solar_w != null) html += metricHTML('volt', 'Solar/DC', ef.solar_w, 'W');
+    if (ef.time_left_min != null) html += metricHTML('temp', 'Time Left', ef.time_left_min, 'min');
+    grid.innerHTML = html || '<p class="no-data">EcoFlow connected but no data returned.</p>';
+  }
+
   function renderGPU(data) {
     const card = $('gpuCard');
     const details = $('gpuDetails');
@@ -126,6 +148,7 @@
       renderFans(data);
       renderVoltages(data);
       renderGPU(data);
+      renderEcoflow(data);
 
       $('lastUpdate').textContent = 'Last update: ' + new Date(data.timestamp).toLocaleTimeString();
     } catch (e) {

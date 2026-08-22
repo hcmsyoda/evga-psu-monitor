@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EVGA SuperNOVA 850 — PSU Monitor</title>
-<link rel="stylesheet" href="/static/style.css?v=3">
+<link rel="stylesheet" href="/static/style.css?v=4">
 </head>
 <body>
 <div class="container">
@@ -45,12 +45,18 @@
     <div id="gpuDetails"></div>
   </section>
 
+  <!-- EcoFlow UPS -->
+  <section class="card" id="ecoflowCard" style="display:none">
+    <h2>🔋 EcoFlow River 3 Plus</h2>
+    <div class="metric-grid" id="ecoflowGrid"></div>
+  </section>
+
   <footer>
     <p>Reads from <code>/sys/class/hwmon</code>, Intel RAPL, and <code>nvidia-smi</code>.
        EVGA SuperNOVA 850 has no USB monitoring — power is measured by motherboard INA sensors.</p>
   </footer>
 </div>
 
-<script src="/static/app.js?v=3"></script>
+<script src="/static/app.js?v=4"></script>
 </body>
 </html>

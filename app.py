@@ -56,6 +56,83 @@ def read_powerguess():
     except Exception:
         return None
 
+
+# EcoFlow River 3 Plus integration
+_ecoflow_device = None
+_ecoflow_checked = False
+
+def read_ecoflow():
+    """Read EcoFlow River 3 Plus data via USB HID."""
+    global _ecoflow_device, _ecoflow_checked
+    if _ecoflow_checked and _ecoflow_device is None:
+        return None
+    try:
+        import hid
+        if _ecoflow_device is None:
+            _ecoflow_checked = True
+            for d in hid.enumerate(0x3746, 0xffff):
+                path = d.get("path", b"").decode("utf-8", errors="ignore")
+                if "hidraw" in path:
+                    _ecoflow_device = d["path"]
+                    break
+            if _ecoflow_device is None:
+                return None
+
+        h = hid.device()
+        h.open_path(_ecoflow_device)
+
+        # Charge level via HID feature report
+        try:
+            report = h.get_feature_report(0x0c, 2)
+            charge_pct = report[1] if len(report) > 1 else None
+        except Exception:
+            charge_pct = None
+
+        h.close()
+
+        # Try r3pcomms for full serial data
+        try:
+            from r3pcomms._r3pcomms import R3PComms
+            import glob
+            serial_port = None
+            for p in glob.glob("/dev/ttyACM*"):
+                serial_port = p
+                break
+            if serial_port:
+                with R3PComms(serial_port, True, False) as d:
+                    data = d.poll()
+                    if data:
+                        result = {}
+                        for key, rkey in [
+                            ("Charge Level", "charge_pct"),
+                            ("Total Load", "total_load_w"),
+                            ("Total Draw", "total_draw_w"),
+                            ("AC Load", "ac_load_w"),
+                            ("DC Load", "dc_load_w"),
+                            ("USB-A Load", "usb_a_w"),
+                            ("USB-C Load", "usb_c_w"),
+                            ("Solar/DC Draw", "solar_w"),
+                        ]:
+                            if key in data:
+                                val = data[key]["value"]
+                                result[rkey] = round(val, 1) if isinstance(val, float) else val
+                        if "Time left?" in data:
+                            val = data["Time left?"]["value"]
+                            result["time_left_min"] = round(val[0] if isinstance(val, list) else val, 0)
+                        if result:
+                            return result
+        except Exception:
+            pass
+
+        if charge_pct is not None:
+            return {"charge_pct": charge_pct}
+        return None
+    except Exception:
+        _ecoflow_checked = True
+        _ecoflow_device = None
+        return None
+
+
 # Friendly names for common hwmon sensor labels
 FRIENDLY_NAMES = {
     # NCT6793 / Nuvoton Super I/O
@@ -370,6 +447,7 @@ def get_system_summary():
         "currents": current_sensors,
         "gpus": gpus,
         "rapl": rapl,
+        "ecoflow": read_ecoflow(),
     }
 
 
