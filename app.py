@@ -79,6 +79,20 @@ def friendly_name(raw_label, chip_name, sensor_type, channel):
     # Direct lookup
     if raw_label in FRIENDLY_NAMES:
         return FRIENDLY_NAMES[raw_label]
+    # Voltage channel mapping (NCT6793 standard)
+    if sensor_type == "volt":
+        volt_by_channel = {
+            "0": "CPU Vcore", "1": "AVCC (+3.3V)", "2": "+3.3V",
+            "3": "+5V", "4": "+12V", "5": "VIN5", "6": "VIN6",
+            "7": "3.3V Standby", "8": "CMOS Battery", "9": "DRAM Termination",
+            "10": "VIN10", "11": "VIN11", "12": "VIN12",
+            "13": "VIN13", "14": "VIN14",
+        }
+        if str(channel) in volt_by_channel:
+            return volt_by_channel[str(channel)]
+    # Fan channel mapping
+    if sensor_type == "fan":
+        return f"Fan {int(channel) if channel.isdigit() else channel}"
     # Fallback: clean up the raw label
     clean = raw_label.replace("_", " ").title()
     if clean.startswith("Temp") or clean.startswith("Fan") or clean.startswith("In"):
