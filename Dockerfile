@@ -20,7 +20,6 @@ COPY static/ static/
 
 EXPOSE 8088
 
-HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-    CMD curl -f http://localhost:8088/api/health || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD curl -f http://localhost:8088/api/health || exit 1
 
 CMD ["python", "app.py"]
