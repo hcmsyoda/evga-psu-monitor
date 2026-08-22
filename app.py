@@ -82,6 +82,22 @@ FRIENDLY_NAMES = {
     "VIN12": "VIN12",
     "VIN13": "VIN13",
     "VIN14": "VIN14",
+    # Raw sysfs names (no label files)
+    "in0": "CPU Vcore",
+    "in1": "AVCC (+3.3V)",
+    "in2": "+3.3V",
+    "in3": "+5V",
+    "in4": "+12V",
+    "in5": "VIN5",
+    "in6": "VIN6",
+    "in7": "3.3V Standby",
+    "in8": "CMOS Battery",
+    "in9": "DRAM Termination",
+    "in10": "VIN10",
+    "in11": "VIN11",
+    "in12": "VIN12",
+    "in13": "VIN13",
+    "in14": "VIN14",
 }
 
 def friendly_name(raw_label, chip_name, sensor_type, channel):
