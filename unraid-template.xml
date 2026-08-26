@@ -13,7 +13,7 @@
   <Category>System: Monitoring</Category>
   <WebUI>http://[IP]:[PORT:8088]/</WebUI>
   <TemplateURL/>
-  <Icon>/mnt/user/appdata/evga-psu-monitor/icon.png</Icon>
+  <Icon>https://raw.githubusercontent.com/hcmsyoda/evga-psu-monitor/main/icon.png</Icon>
   <ExtraParams/>
   <PostArgs/>
   <CPUset/>
