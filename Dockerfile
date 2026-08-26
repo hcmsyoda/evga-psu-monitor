@@ -8,6 +8,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ipmitool \
     dmidecode \
     curl \
+    git \
+    gcc \
+    libc6-dev \
     libudev-dev \
     libusb-1.0-0-dev \
     && rm -rf /var/lib/apt/lists/*
